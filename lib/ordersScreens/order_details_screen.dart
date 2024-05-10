@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:sellers_app/ordersScreens/status_banner_widget.dart';
+import 'package:seller_app/ordersScreens/status_banner_widget.dart';
 import '../global/global.dart';
 import '../models/address.dart';
 import 'address_design_widget.dart';

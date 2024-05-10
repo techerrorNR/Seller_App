@@ -2,10 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:users_app/splashScreen/my_splash_screen.dart';
+
 
 import '../global/global.dart';
-import '../mainScreen/home_screen.dart';
+
+import '../splashScreen/my_splash_screen.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/loading_dialog.dart';
 
@@ -66,14 +67,14 @@ class _LoginTabPageState extends State<LoginTabPage>
 
     if(currentUser != null)
     {
-      checkIfUserRecordExists(currentUser!);
+      checkIfSellersRecordExists(currentUser!);
     }
   }
 
-  checkIfUserRecordExists(User currentUser) async
+  checkIfSellersRecordExists(User currentUser) async
   {
     await FirebaseFirestore.instance
-        .collection("users")
+        .collection("sellers")
         .doc(currentUser.uid)
         .get()
         .then((record) async
@@ -88,10 +89,9 @@ class _LoginTabPageState extends State<LoginTabPage>
           await sharedPreferences!.setString("name", record.data()!["name"]);
           await sharedPreferences!.setString("photoUrl", record.data()!["photoUrl"]);
 
-          List<String> userCartList = record.data()!["userCart"].cast<String>();
-          await sharedPreferences!.setStringList("userCart", userCartList);
 
-          //send user to home screen
+
+          //send seller to home screen
           Navigator.push(context, MaterialPageRoute(builder: (c)=> MySplashScreen()));
         }
         else //status is not approved
@@ -105,7 +105,7 @@ class _LoginTabPageState extends State<LoginTabPage>
           {
         FirebaseAuth.instance.signOut();
         Navigator.pop(context);
-        Fluttertoast.showToast(msg: "This user's record do not exists.");
+        Fluttertoast.showToast(msg: "This Seller  record do not exists.");
       }
     });
   }
@@ -119,11 +119,15 @@ class _LoginTabPageState extends State<LoginTabPage>
 
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Image.asset(
-              "images/login.png",
-              height: MediaQuery.of(context).size.height * 0.40,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(0.25 * MediaQuery.of(context).size.height * 0.40), // 50% of the height of the image
+              child: Image.asset(
+                "images/login.gif",
+                height: MediaQuery.of(context).size.height * 0.40,
+              ),
             ),
           ),
+
 
 
           Form(
@@ -158,7 +162,7 @@ class _LoginTabPageState extends State<LoginTabPage>
 
           ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: Colors.pinkAccent,
+                backgroundColor: Colors.pinkAccent,
                 padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
               ),
               onPressed: ()

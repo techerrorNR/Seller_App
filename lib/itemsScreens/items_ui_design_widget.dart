@@ -1,6 +1,10 @@
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:sellers_app/itemsScreens/items_screen.dart';
-import 'package:sellers_app/models/items.dart';
+import 'package:seller_app/itemsScreens/items_details_screen.dart';
+import 'package:seller_app/models/items.dart';
+
+
 
 class ItemsUiDesignWidget extends StatefulWidget
 {
@@ -24,19 +28,23 @@ class _ItemsUiDesignWidgetState extends State<ItemsUiDesignWidget>
     return GestureDetector(
       onTap: ()
       {
-        /*Navigator.push(context, MaterialPageRoute(builder: (c)=> ItemsScreen(
+        Navigator.push(context, MaterialPageRoute(builder: (c)=> ItemsDetailsScreen(
           model: widget.model,
-        )));*/
+        )));
       },
-      child: Card(
+      child: Container(
+        margin: EdgeInsets.only(bottom: 7),
+        child :Card(
         elevation: 10,
         shadowColor: Colors.black,
+
         child: Padding(
           padding: const EdgeInsets.all(4),
           child: SizedBox(
-            height: 270,
-            width: MediaQuery.of(context).size.width,
+            width: double.infinity,  // width: MediaQuery.of(context).size.width,
+
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
 
                 const SizedBox(height: 2,),
@@ -73,6 +81,7 @@ class _ItemsUiDesignWidgetState extends State<ItemsUiDesignWidget>
             ),
           ),
         ),
+      ),
       ),
     );
   }

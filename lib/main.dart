@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:users_app/authScreens/auth_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:users_app/global/global.dart';
-import 'package:users_app/splashScreen/my_splash_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:seller_app/splashScreen/my_splash_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'global/global.dart';
+
 
 
 Future<void> main() async{

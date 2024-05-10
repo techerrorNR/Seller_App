@@ -1,185 +1,194 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:users_app/authScreens/auth_screen.dart';
-import 'package:users_app/splashScreen/my_splash_screen.dart';
+import 'package:seller_app/shiftedParcelsScreen/shifted_parcels_screen.dart';
 
-class MyDrawer extends StatefulWidget {
-  const MyDrawer({Key? key}) : super(key: key);
 
+import '../brandsScreen/home_screen.dart';
+import '../global/global.dart';
+import '../ordersScreens/orders_screen.dart';
+import '../splashScreen/my_splash_screen.dart';
+
+
+class MyDrawer extends StatefulWidget
+{
   @override
   State<MyDrawer> createState() => _MyDrawerState();
 }
 
-class _MyDrawerState extends State<MyDrawer> {
-  late String? photoUrl;
-  late String? name;
 
+
+class _MyDrawerState extends State<MyDrawer>
+{
   @override
-  void initState() {
-    super.initState();
-    loadUserInfo();
-  }
-
-  void loadUserInfo() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      photoUrl = prefs.getString("photoUrl");
-      name = prefs.getString("name");
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context)
+  {
     return Drawer(
-      backgroundColor: Colors.green,
+      backgroundColor: Colors.black54,
       child: ListView(
-        children:[
-          //Header
+        children: [
+
+          //header
           Container(
-            padding:const EdgeInsets.only(top: 26,bottom:12),
-            child:  Column(
+            padding: const EdgeInsets.only(top: 26, bottom: 12),
+            child: Column(
               children: [
-                // User   Profile
+                //user profile image
                 SizedBox(
                   height: 130,
                   width: 130,
                   child: CircleAvatar(
                     backgroundImage: NetworkImage(
-                      photoUrl ?? "", // Use ?? "" to handle null case
+                      sharedPreferences!.getString("photoUrl")!,
                     ),
                   ),
                 ),
-                SizedBox(height:12,),
 
+                const SizedBox(height: 12,),
 
+                //user name
                 Text(
-                  name ?? "", // Use ?? "" to handle null case
-                  style: TextStyle(
-                    color: Colors.orange,
+                    sharedPreferences!.getString("name")!,
+                  style: const TextStyle(
+                    color: Colors.grey,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height:12,),
+
+                const SizedBox(height: 12,),
+
               ],
             ),
           ),
-          //Body
+
+          //body
           Container(
-            padding: const EdgeInsets.only(top:1),
-            child:Column(
+            padding: const EdgeInsets.only(top: 1),
+            child: Column(
               children: [
+
                 const Divider(
                   height: 10,
-                  color: Colors.indigoAccent,
-                  thickness: 5,
+                  color: Colors.grey,
+                  thickness: 2,
                 ),
-                // Home
+
+                //home
                 ListTile(
-                  leading: const Icon(Icons.home, color: Colors.orange),
+                  leading: const Icon(Icons.home, color: Colors.grey,),
                   title: const Text(
-                    "HOME",
-                    style: TextStyle(color: Colors.orange),
+                    "Home",
+                    style: TextStyle(color: Colors.grey),
                   ),
-                  onTap: () {
+                  onTap: ()
+                  {
+                    Navigator.push(context, MaterialPageRoute(builder: (c)=> HomeScreen()));
+                  },
+                ),
+                const Divider(
+                  height: 10,
+                  color: Colors.grey,
+                  thickness: 2,
+                ),
+
+                //my orders
+                ListTile(
+                  leading: const Icon(Icons.reorder, color: Colors.grey,),
+                  title: const Text(
+                    "New Orders",
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                  onTap: ()
+                  {
+                    Navigator.push(context, MaterialPageRoute(builder: (c)=> OrdersScreen()));
+                  },
+                ),
+                const Divider(
+                  height: 10,
+                  color: Colors.grey,
+                  thickness: 2,
+                ),
+
+                //not yet received orders
+                ListTile(
+                  leading: const Icon(Icons.picture_in_picture_alt_rounded, color: Colors.grey,),
+                  title: const Text(
+                    "Shifted Parcels",
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                  onTap: ()
+                  {
+                    Navigator.push(context, MaterialPageRoute(builder: (c)=> ShiftedParcelsScreen()));
 
                   },
                 ),
                 const Divider(
                   height: 10,
-                  color: Colors.indigoAccent,
-                  thickness: 5,
+                  color: Colors.grey,
+                  thickness: 2,
                 ),
-                // My Order
-                ListTile(
-                  leading: const Icon(Icons.shopping_cart_rounded, color: Colors.orange),
-                  title: const Text(
-                    "My Order",
-                    style: TextStyle(color: Colors.orange),
-                  ),
-                  onTap: () {
 
-                  },
-                ),
-                const Divider(
-                  height: 10,
-                  color: Colors.indigoAccent,
-                  thickness: 5,
-                ),
-                // Not yet received Order
+                //history
                 ListTile(
-                  leading: const Icon(Icons.picture_in_picture_alt_rounded, color: Colors.orange),
-                  title: const Text(
-                    "Not yet received Order",
-                    style: TextStyle(color: Colors.orange),
-                  ),
-                  onTap: () {
-
-                  },
-                ),
-                //
-                const Divider(
-                  height: 10,
-                  color: Colors.indigoAccent,
-                  thickness: 5,
-                ),
-                // History
-                ListTile(
-                  leading: const Icon(Icons.history, color: Colors.orange),
+                  leading: const Icon(Icons.access_time, color: Colors.grey,),
                   title: const Text(
                     "History",
-                    style: TextStyle(color: Colors.orange),
+                    style: TextStyle(color: Colors.grey),
                   ),
-                  onTap: () {
+                  onTap: ()
+                  {
 
                   },
                 ),
-
-                // Other list tiles...
                 const Divider(
                   height: 10,
-                  color: Colors.indigoAccent,
-                  thickness: 5,
+                  color: Colors.grey,
+                  thickness: 2,
                 ),
-                // Search
+
+                //search
                 ListTile(
-                  leading: const Icon(Icons.search, color: Colors.orange),
+                  leading: const Icon(Icons.search, color: Colors.grey,),
                   title: const Text(
                     "Search",
-                    style: TextStyle(color: Colors.orange),
+                    style: TextStyle(color: Colors.grey),
                   ),
-                  onTap: () {
+                  onTap: ()
+                  {
 
                   },
                 ),
-                //
                 const Divider(
                   height: 10,
-                  color: Colors.indigoAccent,
-                  thickness: 5,
+                  color: Colors.grey,
+                  thickness: 2,
                 ),
-                // My Order
+
+                //logout
                 ListTile(
-                  leading: const Icon(Icons.logout, color: Colors.orange),
+                  leading: const Icon(Icons.exit_to_app, color: Colors.grey,),
                   title: const Text(
                     "Sign Out",
-                    style: TextStyle(color: Colors.orange),
+                    style: TextStyle(color: Colors.grey),
                   ),
-                  onTap: () {
+                  onTap: ()
+                  {
                     FirebaseAuth.instance.signOut();
                     Navigator.push(context, MaterialPageRoute(builder: (c)=> MySplashScreen()));
-
                   },
                 ),
-                //
+                const Divider(
+                  height: 10,
+                  color: Colors.grey,
+                  thickness: 2,
+                ),
 
               ],
             ),
-          )
+          ),
+
         ],
       ),
-
     );
   }
 }

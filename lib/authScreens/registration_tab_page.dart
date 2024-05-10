@@ -6,11 +6,11 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart'as fStorage;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:users_app/global/global.dart';
-import 'package:users_app/mainScreen/home_screen.dart';
-import 'package:users_app/splashScreen/my_splash_screen.dart';
-import 'package:users_app/widgets/loading_dialog.dart';
+
+import '../global/global.dart';
+import '../splashScreen/my_splash_screen.dart';
 import '../widgets/custom_text_field.dart';
+import '../widgets/loading_dialog.dart';
 
 
 class RegistrationTabPage extends StatefulWidget
@@ -27,6 +27,8 @@ class _RegistrationTabPageState extends State<RegistrationTabPage> {
   TextEditingController emailTextEditingController = TextEditingController();
   TextEditingController passwordTextEditingController = TextEditingController();
   TextEditingController confirmPasswordTextEditingController = TextEditingController();
+  TextEditingController phoneTextEditingController = TextEditingController();
+  TextEditingController locationTextEditingController = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   String downloadUrlImage="";
 
@@ -56,7 +58,9 @@ class _RegistrationTabPageState extends State<RegistrationTabPage> {
         if(nameTextEditingController.text.isNotEmpty
             && emailTextEditingController.text.isNotEmpty
             && passwordTextEditingController.text.isNotEmpty
-            && confirmPasswordTextEditingController.text.isNotEmpty)
+            && confirmPasswordTextEditingController.text.isNotEmpty
+            && phoneTextEditingController.text.isNotEmpty
+            && locationTextEditingController.text.isNotEmpty)
         {
           showDialog(
               context: context,
@@ -73,7 +77,7 @@ class _RegistrationTabPageState extends State<RegistrationTabPage> {
           String storageFileName = '$fileName.$extension'; // Append the extension to the filename
           fStorage.Reference storageRef =fStorage.FirebaseStorage.instance
               .ref()
-              .child("usersImages").child(fileName)
+              .child("sellersImages").child(fileName)
               .child(storageFileName);
 
           fStorage.UploadTask uploadImageTask= storageRef.putFile(File(imgXFile!.path));
@@ -126,7 +130,7 @@ class _RegistrationTabPageState extends State<RegistrationTabPage> {
   {
     // save to fireStore
     FirebaseFirestore.instance
-        .collection("users")
+        .collection("sellers")
         .doc(currentUser.uid)
         .set(
         {
@@ -134,7 +138,10 @@ class _RegistrationTabPageState extends State<RegistrationTabPage> {
           "email":currentUser.email,
           "name":nameTextEditingController.text.trim(),
           "photoUrl":downloadUrlImage,
+          "phone":phoneTextEditingController.text.trim(),
+          "address":locationTextEditingController.text.trim(),
           "status":"approved",
+          "earnings":0.0,
           "userCart":["initialValue"],
 
     });
@@ -144,7 +151,7 @@ class _RegistrationTabPageState extends State<RegistrationTabPage> {
     await sharedPreferences!.setString("email", currentUser.email!);
     await sharedPreferences!.setString("name", nameTextEditingController.text.trim());
     await sharedPreferences!.setString("photoUrl", downloadUrlImage);
-    await sharedPreferences!.setStringList("userCart",["initialValue"]);
+
 
     Navigator.push(context,MaterialPageRoute(builder: (c)=>MySplashScreen()));
 
@@ -223,6 +230,22 @@ class _RegistrationTabPageState extends State<RegistrationTabPage> {
                    iconData: Icons.password,
                    hintText: "Confirm Password ",
                    isObsecre: true,
+                   enabled: true,
+                 ),
+                 //phone
+                 CustomTextField(
+                   textEditingController: phoneTextEditingController,
+                   iconData: Icons.phone_android,
+                   hintText: "Phone Number  ",
+                   isObsecre: false,
+                   enabled: true,
+                 ),
+                 //location
+                 CustomTextField(
+                   textEditingController: locationTextEditingController,
+                   iconData: Icons.location_pin,
+                   hintText: "Address ",
+                   isObsecre: false,
                    enabled: true,
                  ),
                ],

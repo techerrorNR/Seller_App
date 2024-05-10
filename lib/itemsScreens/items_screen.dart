@@ -1,7 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:sellers_app/itemsScreens/upload_items_screen.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:seller_app/itemsScreens/upload_items_screen.dart';
+
+import '../global/global.dart';
 import '../models/brands.dart';
+import '../models/items.dart';
 import '../widgets/text_delegate_header_widget.dart';
+import 'items_ui_design_widget.dart';
 
 
 class ItemsScreen extends StatefulWidget
@@ -22,6 +28,7 @@ class _ItemsScreenState extends State<ItemsScreen>
   Widget build(BuildContext context)
   {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         flexibleSpace: Container(
           decoration: const BoxDecoration(
@@ -39,7 +46,7 @@ class _ItemsScreenState extends State<ItemsScreen>
           ),
         ),
         title: const Text(
-          "iShop",
+          "ReuseIts",
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
@@ -58,15 +65,66 @@ class _ItemsScreenState extends State<ItemsScreen>
               Icons.add_box_rounded,
               color: Colors.white,
             ),
+            padding: EdgeInsets.symmetric(horizontal: 7), // Adjust padding here
           ),
         ],
       ),
       body: CustomScrollView(
         slivers: [
+
           SliverPersistentHeader(
             pinned: true,
-            delegate: TextDelegateHeaderWidget(title: "My " + widget.model!.brandTitle.toString() + "'s Items"),
+            delegate: TextDetegateHeaderWidget (title: "My " + widget.model!.brandTitle.toString() + "'s Items"),
           ),
+
+          //1. query
+          //2. model
+          //3. ui design widget
+
+          StreamBuilder(
+            stream: FirebaseFirestore.instance
+                .collection("sellers")
+                .doc(sharedPreferences!.getString("uid"))
+                .collection("brands")
+                .doc(widget.model!.brandID)
+                .collection("items")
+                .orderBy("publishedDate", descending: true)
+                .snapshots(),
+            builder: (context, AsyncSnapshot dataSnapshot)
+            {
+              if(dataSnapshot.hasData) //if brands exists
+              {
+                //display brands
+                return SliverStaggeredGrid.countBuilder(
+                  crossAxisCount: 1,
+                  staggeredTileBuilder: (c)=> const StaggeredTile.fit(1),
+                  itemBuilder: (context, index)
+                  {
+                    Items itemsModel = Items.fromJson(
+                      dataSnapshot.data.docs[index].data() as Map<String, dynamic>,
+                    );
+
+                    return ItemsUiDesignWidget(
+                      model: itemsModel,
+                      context: context,
+                    );
+                  },
+                  itemCount: dataSnapshot.data.docs.length,
+                );
+              }
+              else //if brands NOT exists
+              {
+                return const SliverToBoxAdapter(
+                  child: Center(
+                    child: Text(
+                      "No items exists",
+                    ),
+                  ),
+                );
+              }
+            },
+          ),
+
         ],
       ),
     );

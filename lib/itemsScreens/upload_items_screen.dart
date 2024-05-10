@@ -3,12 +3,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:sellers_app/brandsScreens/home_screen.dart';
-import 'package:sellers_app/global/global.dart';
-import 'package:sellers_app/models/brands.dart';
-import 'package:sellers_app/splashScreen/my_splash_screen.dart';
-import 'package:sellers_app/widgets/progress_bar.dart';
+
 import 'package:firebase_storage/firebase_storage.dart' as fStorage;
+
+import '../brandsScreen/home_screen.dart';
+import '../global/global.dart';
+import '../models/brands.dart';
+import '../splashScreen/my_splash_screen.dart';
+import '../widgets/progress_bar.dart';
 
 
 class UploadItemsScreen extends StatefulWidget
@@ -56,8 +58,8 @@ class _UploadItemsScreenState extends State<UploadItemsScreen>
           "sellerName": sharedPreferences!.getString("name"),
           "itemInfo": itemInfoTextEditingController.text.trim(),
           "itemTitle": itemTitleTextEditingController.text.trim(),
-          "longDescription": itemInfoTextEditingController.text.trim(),
-          "price": itemTitleTextEditingController.text.trim(),
+          "longDescription": itemDescriptionTextEditingController.text.trim(),
+          "price": itemPriceTextEditingController.text.trim(),
           "publishedDate": DateTime.now(),
           "status": "available",
           "thumbnailUrl": downloadUrlImage,
@@ -74,8 +76,8 @@ class _UploadItemsScreenState extends State<UploadItemsScreen>
             "sellerName": sharedPreferences!.getString("name"),
             "itemInfo": itemInfoTextEditingController.text.trim(),
             "itemTitle": itemTitleTextEditingController.text.trim(),
-            "longDescription": itemInfoTextEditingController.text.trim(),
-            "price": itemTitleTextEditingController.text.trim(),
+            "longDescription": itemDescriptionTextEditingController.text.trim(),
+            "price": itemPriceTextEditingController.text.trim(),
             "publishedDate": DateTime.now(),
             "status": "available",
             "thumbnailUrl": downloadUrlImage,
@@ -102,13 +104,14 @@ class _UploadItemsScreenState extends State<UploadItemsScreen>
           uploading = true;
         });
 
-        //1. upload image to storage - get downloadUrl
+        // 1. Upload image to storage - get downloadUrl
         String fileName = DateTime.now().millisecondsSinceEpoch.toString();
 
+// Reference to the desired location in Firebase Storage
         fStorage.Reference storageRef = fStorage.FirebaseStorage.instance
             .ref()
-            .child("sellersItemsImages").child(fileName);
-
+            .child("sellersItemsImages")
+            .child(fileName);
         fStorage.UploadTask uploadImageTask = storageRef.putFile(File(imgXFile!.path));
 
         fStorage.TaskSnapshot taskSnapshot = await uploadImageTask.whenComplete(() {});
@@ -184,7 +187,7 @@ class _UploadItemsScreenState extends State<UploadItemsScreen>
         children: [
 
           uploading == true
-              ? linearProgressBar()
+              ? linearProgressBar(context)
               : Container(),
 
           //image
@@ -286,7 +289,7 @@ class _UploadItemsScreenState extends State<UploadItemsScreen>
           //item price
           ListTile(
             leading: const Icon(
-              Icons.camera,
+              Icons.price_change_outlined,
               color: Colors.deepPurple,
             ),
             title: SizedBox(
@@ -337,7 +340,11 @@ class _UploadItemsScreenState extends State<UploadItemsScreen>
           ),
         ),
         title: const Text(
-            "Add New Item"
+            "Add New Item",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+
         ),
         centerTitle: true,
       ),
@@ -372,13 +379,16 @@ class _UploadItemsScreenState extends State<UploadItemsScreen>
                     obtainImageDialogBox();
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.deepPurple,
+                    backgroundColor: Colors.deepPurple,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
                   ),
                   child: const Text(
                     "Add New Item",
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
                   )
               ),
 
